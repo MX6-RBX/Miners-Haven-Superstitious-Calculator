@@ -1,4 +1,4 @@
-{
+const MH_DATA = {
   "1": {
     "Id": 475,
     "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=1160870293&size=420x420&format=Png&isCircular=false",
