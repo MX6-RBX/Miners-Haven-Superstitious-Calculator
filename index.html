@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miner's Haven Superstitious Crafting Planner</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #121212; color: #fff; margin: 0; padding: 20px; }
+    h1, h2 { text-align: center; color: #00e5ff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; max-width: 1000px; margin: 0 auto; }
+    .card { background: #1e1e1e; border: 2px solid #333; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .card:hover { border-color: #00e5ff; transform: translateY(-3px); }
+    .card img { width: 100%; height: auto; border-radius: 4px; }
+    .card p { margin: 8px 0 0; font-size: 14px; font-weight: bold; }
+    
+    #crafting-view { display: none; max-width: 1000px; margin: 0 auto; }
+    .back-btn { background: #00e5ff; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-bottom: 20px; }
+    .split { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+    .target-info, .element-list { background: #1e1e1e; padding: 20px; border-radius: 8px; }
+    .item-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; }
+    .item-row img { width: 40px; height: 40px; margin-right: 10px; }
+    .item-detail { display: flex; align-items: center; }
+    .badges { font-size: 12px; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <h1>Miner's Haven Superstitious Planner</h1>
+
+  <!-- Selection Menu -->
+  <div id="selection-view">
+    <h2>Select a Superstitious Item</h2>
+    <div id="superstitious-grid" class="grid"></div>
+  </div>
+
+  <!-- Crafting Menu -->
+  <div id="crafting-view">
+    <button class="back-btn" onclick="showSelection()">← Back to Selection</button>
+    <div class="split">
+      <div class="target-info" id="target-details"></div>
+      <div class="element-list">
+        <h2>Available Sacrifice Items</h2>
+        <div id="sacrifice-items-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
