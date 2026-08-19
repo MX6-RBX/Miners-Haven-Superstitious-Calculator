@@ -1,4 +1,4 @@
-{
+const MH_DATA = {
   "ElementItems": [
     {
       "Id": 302,
