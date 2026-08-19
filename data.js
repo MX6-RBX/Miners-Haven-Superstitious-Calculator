@@ -1,4 +1,4 @@
-const MH_DATA = {
+const gameData = {
   "ElementItems": [
     {
       "Id": 302,
