@@ -2,206 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Element Item Build Calculator</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; background: #121212; color: #fff; }
-        .container { display: flex; gap: 20px; }
-        .column { flex: 1; background: #1e1e1e; padding: 15px; border-radius: 8px; }
-        .card { background: #2a2a2a; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #333; }
-        .card img { width: 50px; height: 50px; vertical-align: middle; margin-right: 10px; }
-        .progress-bar { background: #333; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 4px; }
-        .progress-fill { background: #4caf50; height: 100%; width: 0%; transition: width 0.3s; }
-        button { background: #007bff; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
-        button.remove { background: #dc3545; }
-    </style>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Miners Haven - Superstitious Crafting</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>Super Item Optimizer</h1>
+    <header>
+        <div class="header-content">
+            <h1>Miners Haven</h1>
+            <span>Superstitious Crafting Calculator</span>
+        </div>
+    </header>
 
-<label for="superSelect"><strong>1. Select Superstitious Item:</strong></label>
-<select id="superSelect" onchange="selectSuperItem()"></select>
 
-<div class="container" style="margin-top: 20px;">
-    <!-- SECTION 1 & 2: TARGET & CATALYST -->
-    <div class="column">
-        <h2>Target & Catalyst</h2>
-        <div id="superDetails" class="card">Select an item above...</div>
-        <div id="catalystDetails" class="card">No catalyst loaded...</div>
-        
-        <h3>Target Stats Progress</h3>
-        <div id="progressTracker"></div>
-    </div>
+    <main>
 
-    <!-- ACTIVE BUILD SECTION -->
-    <div class="column">
-        <h2>Your Active Build</h2>
-        <div id="activeBuildList">No items added yet.</div>
-    </div>
+        <!-- ITEM LIST -->
 
-    <!-- SECTION 3: ELEMENT ITEMS SELECTION -->
-    <div class="column" style="max-height: 80vh; overflow-y: auto;">
-        <h2>Available Element Items</h2>
-        <div id="elementItemsList">Loading data...</div>
-    </div>
-</div>
+        <section id="itemListPage">
 
-<script>
-let appData = {};
-let selectedSuper = null;
-let activeBuild = {}; // Stores { itemId: { item, quantity } }
+            <div class="page-title">
+                <h2>Superstitious Items</h2>
 
-// 1. Fetch JSON Data
-fetch('data.json')
-    .then(res => res.json())
-    .then(data => {
-        appData = data;
-        initSuperDropdown();
-        renderElementItems();
-    })
-    .catch(err => console.error("Error loading JSON:", err));
-
-// Populate Superstitious Items Dropdown
-function initSuperDropdown() {
-    const select = document.getElementById('superSelect');
-    select.innerHTML = '<option value="">-- Choose Item --</option>';
-    appData.SuperstitiousItems.forEach(item => {
-        select.innerHTML += `<option value="${item.Id}">${item.Name}</option>`;
-    });
-}
-
-// 2. Select Super Item & Auto-match Catalyst
-function selectSuperItem() {
-    const id = Number(document.getElementById('superSelect').value);
-    selectedSuper = appData.SuperstitiousItems.find(i => i.Id === id);
-
-    if (!selectedSuper) return;
-
-    // Render Super Item Details
-    document.getElementById('superDetails').innerHTML = `
-        <img src="${selectedSuper.Image}" />
-        <strong>${selectedSuper.Name}</strong>
-    `;
-
-    // Match Catalyst by Id
-    const catalyst = appData.Catalysts.find(c => c.Id === selectedSuper.Id);
-    document.getElementById('catalystDetails').innerHTML = catalyst ? `
-        <img src="${catalyst.Image}" />
-        <strong>Catalyst:</strong> ${catalyst.Name} (ID: ${catalyst.CatalystId})
-    ` : 'No catalyst found.';
-
-    updateProgress();
-}
-
-// 3. Render Element Items List
-function renderElementItems() {
-    const container = document.getElementById('elementItemsList');
-    container.innerHTML = '';
-
-    appData.ElementItems.forEach(item => {
-        container.innerHTML += `
-            <div class="card">
-                <img src="${item.Image}" />
-                <strong>${item.Name}</strong>
-                <div>${formatElements(item.Elements)}</div>
-                <button onclick="addToBuild(${item.Id})">+ Add to Build</button>
+                <input
+                    id="searchBox"
+                    type="text"
+                    placeholder="Search items..."
+                >
             </div>
-        `;
-    });
-}
 
-// 4. Add / Increment Quantity in Active Build
-function addToBuild(itemId) {
-    const item = appData.ElementItems.find(i => i.Id === itemId);
-    if (!item) return;
 
-    if (activeBuild[itemId]) {
-        activeBuild[itemId].quantity += 1;
-    } else {
-        activeBuild[itemId] = { item: item, quantity: 1 };
-    }
+            <div id="itemGrid"></div>
 
-    renderActiveBuild();
-    updateProgress();
-}
+        </section>
 
-// Change item quantity manually or remove
-function updateQuantity(itemId, change) {
-    if (!activeBuild[itemId]) return;
-    
-    activeBuild[itemId].quantity += change;
-    if (activeBuild[itemId].quantity <= 0) {
-        delete activeBuild[itemId];
-    }
-    
-    renderActiveBuild();
-    updateProgress();
-}
 
-// 5. Render Selected Build
-function renderActiveBuild() {
-    const container = document.getElementById('activeBuildList');
-    const keys = Object.keys(activeBuild);
+        <!-- CRAFTING PAGE -->
 
-    if (keys.length === 0) {
-        container.innerHTML = 'No items added yet.';
-        return;
-    }
+        <section
+            id="craftingPage"
+            class="hidden"
+        >
 
-    container.innerHTML = '';
-    keys.forEach(id => {
-        const entry = activeBuild[id];
-        container.innerHTML += `
-            <div class="card">
-                <strong>${entry.item.Name}</strong> x${entry.quantity}
-                <div>
-                    <button onclick="updateQuantity(${id}, 1)">+</button>
-                    <button onclick="updateQuantity(${id}, -1)">-</button>
-                    <button class="remove" onclick="updateQuantity(${id}, -${entry.quantity})">Remove</button>
-                </div>
-            </div>
-        `;
-    });
-}
+            <button
+                id="backButton"
+                class="back-button"
+            >
+                ← Back
+            </button>
 
-// 6. Calculate Totals and Update Progress Bars
-function updateProgress() {
-    if (!selectedSuper) return;
 
-    // Tally Active Build Stats multiplied by Quantity
-    let currentTotals = { Earth: 0, Aether: 0, Order: 0, Fire: 0, Entropy: 0, Water: 0 };
-    Object.values(activeBuild).forEach(entry => {
-        for (let elem in entry.item.Elements) {
-            currentTotals[elem] += entry.item.Elements[elem] * entry.quantity;
-        }
-    });
+            <div id="craftingContent"></div>
 
-    // Render Progress UI
-    const tracker = document.getElementById('progressTracker');
-    tracker.innerHTML = '';
+        </section>
 
-    for (let elem in selectedSuper.Elements) {
-        const target = selectedSuper.Elements[elem];
-        const current = currentTotals[elem] || 0;
-        const percent = Math.min(100, Math.max(0, (current / target) * 100));
+    </main>
 
-        tracker.innerHTML += `
-            <div style="margin-bottom: 8px;">
-                <small>${elem}: ${current} / ${target}</small>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${percent}%;"></div>
-                </div>
-            </div>
-        `;
-    }
-}
 
-function formatElements(elements) {
-    return Object.entries(elements)
-        .filter(([_, val]) => val !== 0)
-        .map(([key, val]) => `${key}: ${val}`)
-        .join(', ');
-}
-</script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+
 </body>
 </html>
