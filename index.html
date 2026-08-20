@@ -1,74 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Miners Haven - Superstitious Crafting</title>
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miners Haven Recipe Builder</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Miners Haven</h1>
+      <p>Recipe Builder</p>
+    </div>
+    <button id="clearBtn" class="secondary">Clear Recipe</button>
+  </header>
 
-    <header>
-        <div class="header-content">
-            <h1>Miners Haven</h1>
-            <span>Superstitious Crafting Calculator</span>
-        </div>
-    </header>
+  <main>
+    <section class="panel builder">
+      <div class="section-title">
+        <h2>Recipe</h2>
+        <span id="itemCount">0 items</span>
+      </div>
 
+      <div class="search-wrap">
+        <input id="search" type="search" placeholder="Search for an item..." autocomplete="off">
+        <div id="results" class="results hidden"></div>
+      </div>
 
-    <main>
+      <div id="recipe" class="recipe empty">
+        <div class="empty-state">Search for an item above to add it to your recipe.</div>
+      </div>
+    </section>
 
-        <!-- ITEM LIST -->
-
-        <section id="itemListPage">
-
-            <div class="page-title">
-                <h2>Superstitious Items</h2>
-
-                <input
-                    id="searchBox"
-                    type="text"
-                    placeholder="Search items..."
-                >
-            </div>
-
-
-            <div id="itemGrid"></div>
-
-        </section>
-
-
-        <!-- CRAFTING PAGE -->
-
-        <section
-            id="craftingPage"
-            class="hidden"
-        >
-
-            <button
-                id="backButton"
-                class="back-button"
-            >
-                ← Back
-            </button>
-
-
-            <div id="craftingContent"></div>
-
-        </section>
-
-    </main>
-
-
-    <script src="data.js"></script>
-    <script src="script.js"></script>
-
+    <aside class="panel totals">
+      <div class="section-title"><h2>Element Totals</h2></div>
+      <div id="elements"></div>
+    </aside>
+  </main>
+</div>
+<script src="data.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
