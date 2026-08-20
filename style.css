@@ -35,3 +35,15 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px}.header-act
 .element .fill {
   background: var(--element-color);
 }
+.target-image {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.catalyst-image {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
