@@ -11,8 +11,11 @@ const superstitious = (MH_DATA.SuperstitiousItems || []).filter(
 );
 
 const byId = new Map(
-  (MH_DATA.ElementItems || [])
-    .filter((x) => x && x.Name && x.Elements)
+  [
+    ...(MH_DATA.ElementItems || []),
+    ...(MH_DATA.Catalysts || [])
+  ]
+    .filter((x) => x && x.Name)
     .map((x) => [String(x.Id), x])
 );
 
@@ -99,14 +102,6 @@ function imageTag(assetId, className = "") {
 function selectSuperstitious(item) {
   selectedSuperstitious = item;
   recipe.clear();
-
-  render();
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-}
 
   render();
 
@@ -326,10 +321,6 @@ function renderTarget() {
 
   recipeTargetEl.classList.remove("hidden");
 
-  const catalyst = catalystById.get(
-    String(selectedSuperstitious.CatalystId)
-  );
-
   recipeTargetEl.innerHTML = `
     <div class="target-card">
 
@@ -352,38 +343,12 @@ function renderTarget() {
             )}
           </div>
 
-          ${
-            catalyst
-              ? `
-                <div class="target-catalyst">
-
-                  <span class="catalyst-label">
-                    Catalyst
-                  </span>
-
-                  <div class="catalyst">
-
-                    ${imageTag(
-                      catalyst.Image,
-                      "catalyst-image"
-                    )}
-
-                    <span>
-                      ${escapeHtml(
-                        catalyst.Name
-                      )}
-                    </span>
-
-                  </div>
-
-                </div>
-              `
-              : `
-                <div class="target-catalyst">
-                  Catalyst not found
-                </div>
-              `
-          }
+          <div class="target-catalyst">
+            Catalyst ID
+            ${escapeHtml(
+              selectedSuperstitious.CatalystId
+            )}
+          </div>
 
         </div>
 
