@@ -4,3 +4,34 @@
 main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px}.header-actions{display:flex;gap:10px}.target-picker{margin-bottom:22px}.picker-title{margin-bottom:12px}.picker-title h3,.recipe-heading h3,.catalog-heading h3{font-size:15px}.picker-title p,.recipe-heading span,.catalog-heading span{font-size:12px;color:#7f8997}.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px}.item-card{min-width:0;text-align:left;background:#101318;border:1px solid #292e36;color:#fff;border-radius:10px;padding:9px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s}.item-card:hover{transform:translateY(-1px);background:#181d24;border-color:#46505e}.item-card.selected{border-color:#9b82ff;background:#211d2c;box-shadow:0 0 0 1px #9b82ff33}.item-card.in-recipe{border-color:#6c8d73}.item-card:disabled{cursor:not-allowed;opacity:.45}.card-image{width:100%;height:90px;object-fit:contain;display:block;background:#0d0f12;border-radius:7px;margin-bottom:7px}.card-name{font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-meta{font-size:10px;color:#7f8997;margin-top:2px}.recipe-target{margin-bottom:18px}.target-card{background:#101318;border:1px solid rgba(255,200,80,.3);border-radius:11px;padding:12px}.target-label{font-size:10px;letter-spacing:.1em;font-weight:800;color:#d8b765;margin-bottom:8px}.target-main{display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center}.target-image{width:58px;height:58px;object-fit:contain}.target-name{font-weight:700}.target-catalyst{font-size:12px;color:#7f8997;margin-top:2px}.target-remove{color:#ff9999}.hidden{display:none}.recipe-heading,.catalog-heading{display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 10px}.recipe{display:flex;flex-direction:column;gap:8px}.empty{min-height:130px;display:grid;place-items:center}.empty-state{color:#737c89;text-align:center;background:#101318;border:1px dashed #292e36;border-radius:10px;padding:35px 15px}.recipe-item{display:grid;grid-template-columns:48px 1fr auto auto;gap:12px;align-items:center;background:#101318;border:1px solid #292e36;border-radius:10px;padding:8px}.recipe-item img{width:48px;height:48px;object-fit:contain}.name{font-weight:600}.meta{font-size:12px;color:#7f8997;margin-top:3px}.qty{display:flex;align-items:center;gap:7px}.qty button{width:30px;height:30px;border:1px solid #343a44;background:#1b2027;color:#fff;border-radius:8px;cursor:pointer}.qty button:hover{background:#252b33}.qty span{min-width:24px;text-align:center}.remove{height:30px;padding:5px 9px;color:#ff8d8d}.catalog-grid{padding-top:2px}.element{margin-bottom:17px}.element-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.element-name{font-weight:650}.element-values{display:flex;gap:5px;align-items:center;font-variant-numeric:tabular-nums}.element-values b{font-size:14px}.element-values span{color:#59616d}.element-values strong{font-size:14px;color:#aab2bd}.bar{height:9px;background:#0d1014;border-radius:99px;overflow:hidden;border:1px solid #1e232a}.fill{height:100%;width:0;background:#778392;border-radius:99px;transition:width .2s}.complete .fill{background:#8fbd98}.incomplete .fill{background:#8b96a5}.bar-caption{display:flex;justify-content:space-between;font-size:10px;color:#656e7a;margin-top:4px}.complete .element-values b{color:#9ee6a8}.incomplete .element-values b{color:#e2e6eb}.catalog-grid .item-card{min-height:138px}
 @media(max-width:1000px){main{grid-template-columns:1fr}.totals{position:static}.item-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}}
 @media(max-width:650px){.app{padding:14px}header{gap:12px;align-items:flex-start}.header-actions{flex-direction:column;align-items:stretch}.recipe-item{grid-template-columns:44px 1fr auto}.recipe-item .remove{grid-column:2 / -1;justify-self:end}.recipe-item img{width:44px;height:44px}.target-main{grid-template-columns:52px 1fr}.target-remove{grid-column:2;justify-self:start}.target-image{width:52px;height:52px}}
+/* ============================================================
+   ELEMENT COLORS
+   ============================================================ */
+
+.element[data-element="Earth"] {
+  --element-color: #8b6f47;
+}
+
+.element[data-element="Aether"] {
+  --element-color: #9b7cff;
+}
+
+.element[data-element="Order"] {
+  --element-color: #4da6ff;
+}
+
+.element[data-element="Fire"] {
+  --element-color: #ff5a36;
+}
+
+.element[data-element="Entropy"] {
+  --element-color: #a855f7;
+}
+
+.element[data-element="Water"] {
+  --element-color: #38bdf8;
+}
+
+.element .fill {
+  background: var(--element-color);
+}
