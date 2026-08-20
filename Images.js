@@ -1,0 +1,1 @@
+const MH_IMAGES = {};
