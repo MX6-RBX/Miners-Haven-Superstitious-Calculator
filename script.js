@@ -81,10 +81,9 @@ function imageTag(assetId, className = '') {
 
   let id = value;
 
-  // Extract the asset ID from a Roblox thumbnail API URL
   if (
-    value.startsWith('http://') ||
-    value.startsWith('https://')
+    value.startsWith("http://") ||
+    value.startsWith("https://")
   ) {
     const match = value.match(/assetIds=(\d+)/i);
 
@@ -92,6 +91,17 @@ function imageTag(assetId, className = '') {
       id = match[1];
     }
   }
+
+  const imageUrl = MH_IMAGES[id] || IMAGE_PLACEHOLDER;
+
+  return `<img
+    class="${escapeAttr(className)}"
+    src="${escapeAttr(imageUrl)}"
+    data-asset-id="${escapeAttr(id)}"
+    alt=""
+    loading="lazy"
+  >`;
+}
 
   // Use the already-resolved CDN URL from Images.js
   const imageUrl = MH_IMAGES[id] || IMAGE_PLACEHOLDER;
@@ -624,13 +634,6 @@ function render() {
   renderRecipe();
   renderItemGrid();
   renderElements();
-
-  /*
-   * The HTML has now been rendered.
-   *
-   * Start loading any images currently displayed.
-   */
-  loadCurrentImages();
 }
 
 /* ============================================================
