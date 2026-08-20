@@ -1,4 +1,4 @@
-{
+const MH_DATA = {
   "Catalysts": [
     {
       "Id": 438,
