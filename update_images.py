@@ -11,6 +11,15 @@ OUTPUT_FILE = Path("Images.js")
 
 BATCH_SIZE = 20
 
+MAX_RETRIES = 4
+RETRY_DELAY = 2
+
+REQUEST_DELAY = 0.25
+
+
+# ============================================================
+# ASSET ID EXTRACTION
+# ============================================================
 
 def extract_asset_id(value):
     if not value:
@@ -18,18 +27,26 @@ def extract_asset_id(value):
 
     value = str(value).strip()
 
-    # Already a plain asset ID
+    # Plain asset ID
     if value.isdigit():
         return value
 
     # rbxassetid://123456
-    match = re.search(r"rbxassetid://(\d+)", value, re.IGNORECASE)
+    match = re.search(
+        r"rbxassetid://(\d+)",
+        value,
+        re.IGNORECASE
+    )
 
     if match:
         return match.group(1)
 
     # thumbnails.roblox.com/v1/assets?assetIds=123456
-    match = re.search(r"assetIds=(\d+)", value, re.IGNORECASE)
+    match = re.search(
+        r"assetIds=(\d+)",
+        value,
+        re.IGNORECASE
+    )
 
     if match:
         return match.group(1)
@@ -37,10 +54,17 @@ def extract_asset_id(value):
     return None
 
 
-def read_data_js():
-    text = DATA_FILE.read_text(encoding="utf-8")
+# ============================================================
+# READ DATA.JS
+# ============================================================
 
-    # Find the object after const MH_DATA =
+def read_data_js():
+    print("Reading Data.js...")
+
+    text = DATA_FILE.read_text(
+        encoding="utf-8"
+    )
+
     match = re.search(
         r"const\s+MH_DATA\s*=\s*(\{.*\})\s*;?\s*$",
         text,
@@ -48,41 +72,122 @@ def read_data_js():
     )
 
     if not match:
-        raise RuntimeError("Could not find MH_DATA in Data.js")
+        raise RuntimeError(
+            "Could not find MH_DATA in data.js"
+        )
 
     object_text = match.group(1)
 
-    # Your Data.js is valid JSON once the JS declaration is removed.
-    return json.loads(object_text)
+    try:
+        return json.loads(object_text)
 
+    except json.JSONDecodeError as error:
+        raise RuntimeError(
+            f"Data.js contains invalid JSON: {error}"
+        )
+
+
+# ============================================================
+# FIND ALL IMAGE IDS
+# ============================================================
 
 def get_asset_ids(data):
+
     ids = set()
 
     def process_item(item):
+
         if isinstance(item, dict):
+
+            image_value = item.get("Image")
+
             asset_id = extract_asset_id(
-                item.get("Image")
+                image_value
             )
 
             if asset_id:
                 ids.add(asset_id)
 
-            # Check nested values too.
+            # Search nested dictionaries/lists
             for value in item.values():
-                if isinstance(value, (dict, list)):
+
+                if isinstance(
+                    value,
+                    (dict, list)
+                ):
                     process_item(value)
 
         elif isinstance(item, list):
+
             for value in item:
                 process_item(value)
 
     process_item(data)
 
-    return sorted(ids)
+    return sorted(
+        ids,
+        key=lambda x: int(x)
+    )
+
+
+# ============================================================
+# LOAD EXISTING IMAGES.JS
+# ============================================================
+
+def read_existing_images():
+
+    if not OUTPUT_FILE.exists():
+        print(
+            "Images.js does not exist yet."
+        )
+
+        return {}
+
+    print(
+        "Reading existing Images.js..."
+    )
+
+    text = OUTPUT_FILE.read_text(
+        encoding="utf-8"
+    )
+
+    match = re.search(
+        r"const\s+MH_IMAGES\s*=\s*(\{.*\})\s*;",
+        text,
+        re.DOTALL
+    )
+
+    if not match:
+        print(
+            "Could not parse existing Images.js."
+        )
+
+        return {}
+
+    try:
+
+        return json.loads(
+            match.group(1)
+        )
+
+    except json.JSONDecodeError:
+
+        print(
+            "Existing Images.js contains invalid JSON."
+        )
+
+        return {}
+
+
+# ============================================================
+# REQUEST ROBLOX
+# ============================================================
 
 def fetch_batch(ids):
-    url = "https://thumbnails.roblox.com/v1/assets"
+
+    url = (
+        "https://thumbnails.roblox.com/v1/assets"
+    )
 
     params = {
         "assetIds": ",".join(ids),
@@ -101,89 +206,308 @@ def fetch_batch(ids):
 
     result = response.json()
 
-    images = {}
+    if not isinstance(result, dict):
 
-    for entry in result.get("data", []):
-        target_id = str(
-            entry.get("targetId", "")
+        raise RuntimeError(
+            "Roblox returned an invalid response."
         )
 
-        image_url = entry.get("imageUrl")
+    images = {}
 
-        if target_id and image_url:
+    entries = result.get(
+        "data",
+        []
+    )
+
+    for entry in entries:
+
+        target_id = str(
+            entry.get(
+                "targetId",
+                ""
+            )
+        )
+
+        state = entry.get(
+            "state"
+        )
+
+        image_url = entry.get(
+            "imageUrl"
+        )
+
+        if (
+            target_id
+            and image_url
+        ):
+
             images[target_id] = image_url
+
+        else:
+
+            print(
+                f"  Missing image: "
+                f"ID={target_id} "
+                f"State={state}"
+            )
 
     return images
 
 
+# ============================================================
+# FETCH WITH RETRIES
+# ============================================================
+
+def fetch_batch_with_retries(ids):
+
+    for attempt in range(
+        1,
+        MAX_RETRIES + 1
+    ):
+
+        try:
+
+            print(
+                f"  Attempt "
+                f"{attempt}/{MAX_RETRIES}"
+            )
+
+            result = fetch_batch(ids)
+
+            return result
+
+        except Exception as error:
+
+            print(
+                f"  Request failed: "
+                f"{error}"
+            )
+
+            if attempt < MAX_RETRIES:
+
+                print(
+                    f"  Retrying in "
+                    f"{RETRY_DELAY}s..."
+                )
+
+                time.sleep(
+                    RETRY_DELAY
+                )
+
+    print(
+        "  All retries failed."
+    )
+
+    return {}
+
+
+# ============================================================
+# MAIN
+# ============================================================
+
 def main():
-    print("Reading Data.js...")
 
     data = read_data_js()
 
-    asset_ids = get_asset_ids(data)
-
-    print(
-        f"Found {len(asset_ids)} unique Roblox asset IDs."
+    asset_ids = get_asset_ids(
+        data
     )
 
-    images = {}
+    print(
+        f"Found {len(asset_ids)} "
+        f"unique Roblox asset IDs."
+    )
 
-    for start in range(
-        0,
-        len(asset_ids),
-        BATCH_SIZE
+    if not asset_ids:
+
+        raise RuntimeError(
+            "No Roblox asset IDs were found."
+        )
+
+    # --------------------------------------------------------
+    # Existing images
+    # --------------------------------------------------------
+
+    existing_images = (
+        read_existing_images()
+    )
+
+    print(
+        f"Existing image URLs: "
+        f"{len(existing_images)}"
+    )
+
+    # Start with existing images.
+    #
+    # This means a temporary Roblox failure
+    # won't delete a previously working image.
+    images = dict(
+        existing_images
+    )
+
+    successful = set()
+
+    failed = set()
+
+    # --------------------------------------------------------
+    # Request batches
+    # --------------------------------------------------------
+
+    total_batches = (
+        (
+            len(asset_ids)
+            + BATCH_SIZE
+            - 1
+        )
+        // BATCH_SIZE
+    )
+
+    for batch_number, start in enumerate(
+        range(
+            0,
+            len(asset_ids),
+            BATCH_SIZE
+        ),
+        start=1
     ):
+
         batch = asset_ids[
-            start:start + BATCH_SIZE
+            start:
+            start + BATCH_SIZE
         ]
 
         print(
-            f"Requesting {start + 1}-"
-            f"{start + len(batch)}..."
+            ""
         )
 
-        try:
-            result = fetch_batch(batch)
+        print(
+            f"Batch "
+            f"{batch_number}/"
+            f"{total_batches} "
+            f"("
+            f"{len(batch)} IDs"
+            f")"
+        )
 
-            images.update(result)
+        result = fetch_batch_with_retries(
+            batch
+        )
 
-            print(
-                f"Received {len(result)} images."
-            )
+        images.update(
+            result
+        )
 
-        except Exception as error:
-            print(
-                f"Request failed: {error}"
-            )
+        successful.update(
+            result.keys()
+        )
 
-        # Don't hammer the API.
-        time.sleep(0.25)
+        # Anything not returned by Roblox
+        # is considered failed for this run.
+        for asset_id in batch:
 
-    print(
-        f"Successfully found {len(images)} image URLs."
+            if asset_id not in result:
+
+                failed.add(
+                    asset_id
+                )
+
+        print(
+            f"  Received "
+            f"{len(result)} images."
+        )
+
+        time.sleep(
+            REQUEST_DELAY
+        )
+
+    # --------------------------------------------------------
+    # Remove images that are no longer
+    # present in Data.js
+    # --------------------------------------------------------
+
+    valid_ids = set(
+        asset_ids
     )
 
-    output = [
+    images = {
+        asset_id: url
+        for asset_id, url in images.items()
+        if asset_id in valid_ids
+    }
+
+    # --------------------------------------------------------
+    # Write Images.js
+    # --------------------------------------------------------
+
+    output = (
         "const MH_IMAGES = "
         + json.dumps(
             images,
             indent=2,
             ensure_ascii=False
         )
-        + ";",
-        ""
-    ]
+        + ";"
+        + "\n"
+    )
 
     OUTPUT_FILE.write_text(
-        "\n".join(output),
+        output,
         encoding="utf-8"
     )
 
+    # --------------------------------------------------------
+    # Summary
+    # --------------------------------------------------------
+
+    missing = [
+        asset_id
+        for asset_id in asset_ids
+        if asset_id not in images
+    ]
+
+    print("")
+    print("=" * 60)
+    print("IMAGE UPDATE COMPLETE")
+    print("=" * 60)
+
+    print(
+        f"Total asset IDs: "
+        f"{len(asset_ids)}"
+    )
+
+    print(
+        f"Images available: "
+        f"{len(images)}"
+    )
+
+    print(
+        f"Missing images: "
+        f"{len(missing)}"
+    )
+
+    if missing:
+
+        print("")
+        print(
+            "The following asset IDs "
+            "could not be resolved:"
+        )
+
+        for asset_id in missing:
+
+            print(
+                f"  {asset_id}"
+            )
+
+    print("")
     print(
         f"Wrote {OUTPUT_FILE}"
     )
 
+
+# ============================================================
+# RUN
+# ============================================================
 
 if __name__ == "__main__":
     main()
