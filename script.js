@@ -256,12 +256,12 @@ function superstitiousCard(item) {
 }
 
 function normalCard(item) {
-  const qty =
-    recipe.get(String(item.Id)) || 0;
+  const qty = recipe.get(String(item.Id)) || 0;
 
   return `<button
     class="item-card ${qty ? "in-recipe" : ""}"
     data-item-id="${escapeAttr(item.Id)}"
+    type="button"
     ${selectedSuperstitious ? "" : "disabled"}
   >
     ${imageTag(item.Image, "card-image")}
@@ -271,15 +271,10 @@ function normalCard(item) {
     </div>
 
     <div class="card-meta">
-      ${
-        qty
-          ? `In recipe: ${qty}`
-          : `ID ${escapeHtml(item.Id)}`
-      }
+      ${qty ? `In recipe: ${qty}` : `ID ${escapeHtml(item.Id)}`}
     </div>
   </button>`;
 }
-
 /* ============================================================
    GRIDS
    ============================================================ */
@@ -641,34 +636,21 @@ superstitiousGrid.addEventListener(
   }
 );
 
-itemGrid.addEventListener(
-  "click",
-  (e) => {
-    const card =
-      e.target.closest(
-        "[data-item-id]"
-      );
+itemGrid.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-item-id]");
 
-    if (
-      !card ||
-      !selectedSuperstitious
-    ) {
-      return;
-    }
-
-    const item =
-      byId.get(
-        String(
-          card.dataset.itemId
-        )
-      );
-
-    if (item) {
-      addNormalItem(item);
-    }
+  if (!card || !selectedSuperstitious) {
+    return;
   }
-);
 
+  const item = byId.get(
+    String(card.dataset.itemId)
+  );
+
+  if (item) {
+    addNormalItem(item);
+  }
+});
 recipeEl.addEventListener(
   "click",
   (e) => {
