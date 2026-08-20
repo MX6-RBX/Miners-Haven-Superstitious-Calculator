@@ -2,7 +2,7 @@ const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
 const recipe = new Map();
 let selectedCatalyst = null;
 
-const items = (MH_DATA.ElementItems || []).filter(
+const items = Object.values(MH_DATA.ElementItems || {}).filter(
   (x) => x && x.Name && x.Elements
 );
 
