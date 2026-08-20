@@ -6,7 +6,7 @@ from pathlib import Path
 import requests
 
 
-DATA_FILE = Path("Data.js")
+DATA_FILE = Path("data.js")
 OUTPUT_FILE = Path("Images.js")
 
 BATCH_SIZE = 20
