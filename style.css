@@ -9,7 +9,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px}.header-act
    ============================================================ */
 
 .element[data-element="Earth"] {
-  --element-color: #8b6f47;
+  --element-color: #1a913c;
 }
 
 .element[data-element="Aether"] {
@@ -17,19 +17,19 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px}.header-act
 }
 
 .element[data-element="Order"] {
-  --element-color: #4da6ff;
+  --element-color: #ffffff;
 }
 
 .element[data-element="Fire"] {
-  --element-color: #ff5a36;
+  --element-color: #ff571f;
 }
 
 .element[data-element="Entropy"] {
-  --element-color: #a855f7;
+  --element-color: #DC143C;
 }
 
 .element[data-element="Water"] {
-  --element-color: #38bdf8;
+  --element-color: #4080c9;
 }
 
 .element .fill {
