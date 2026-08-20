@@ -510,8 +510,10 @@ function renderElements() {
           ? "complete"
           : "incomplete";
 
-      return `<div class="element ${statusClass}">
-
+      return `<div
+  class="element ${statusClass}"
+  data-element="${escapeAttr(element)}"
+      >
         <div class="element-head">
 
           <span class="element-name">
