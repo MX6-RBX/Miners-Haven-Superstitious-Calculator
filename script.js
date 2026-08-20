@@ -1,5 +1,6 @@
 const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
 const recipe = new Map();
+let selectedCatalyst = null;
 
 const items = (MH_DATA.ElementItems || []).filter(
   (x) => x && x.Name && x.Elements
@@ -97,10 +98,13 @@ function selectSuperstitious(item) {
   selectedSuperstitious = item;
   recipe.clear();
 
+  // Get the catalyst belonging to this Superstitious item
+  selectedCatalyst = catalystById.get(
+    String(item.CatalystId)
+  ) || null;
+
   render();
 
-  // The item buttons change from disabled -> enabled,
-  // so the item grid needs to be rebuilt here.
   renderItemGrid();
 
   window.scrollTo({
@@ -145,11 +149,11 @@ function removeItem(id) {
 
 function removeTarget() {
   selectedSuperstitious = null;
+  selectedCatalyst = null;
   recipe.clear();
 
   render();
 
-  // Buttons need to become disabled again.
   renderItemGrid();
 
   targetPicker.scrollIntoView({
@@ -563,7 +567,7 @@ function renderElements() {
    ============================================================ */
 
 function render() {
-  renderSuperstitiousGrid();
+
   renderTarget();
   renderRecipe();
   renderElements();
@@ -687,12 +691,11 @@ document
   .getElementById("clearBtn")
   .addEventListener("click", () => {
     selectedSuperstitious = null;
+    selectedCatalyst = null;
     recipe.clear();
 
     render();
 
-    // Rebuild once because the buttons
-    // need to become disabled.
     renderItemGrid();
   });
 
@@ -706,3 +709,4 @@ render();
  * Render the item grid once when the page loads.
  */
 renderItemGrid();
+renderSuperstitiousGrid();
