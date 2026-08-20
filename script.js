@@ -79,16 +79,27 @@ const imageLoading = new Set();
 function imageTag(assetId, className = '') {
   const value = cleanAssetId(assetId);
 
-  let imageUrl = value;
+  let id = value;
 
-  // If it's an asset ID, look up the cached Roblox image.
-  if (!value.startsWith('http://') && !value.startsWith('https://')) {
-    imageUrl = MH_IMAGES[value] || '';
+  // Extract the asset ID from a Roblox thumbnail API URL
+  if (
+    value.startsWith('http://') ||
+    value.startsWith('https://')
+  ) {
+    const match = value.match(/assetIds=(\d+)/i);
+
+    if (match) {
+      id = match[1];
+    }
   }
+
+  // Use the already-resolved CDN URL from Images.js
+  const imageUrl = MH_IMAGES[id] || IMAGE_PLACEHOLDER;
 
   return `<img
     class="${escapeAttr(className)}"
     src="${escapeAttr(imageUrl)}"
+    data-asset-id="${escapeAttr(id)}"
     alt=""
     loading="lazy"
   >`;
