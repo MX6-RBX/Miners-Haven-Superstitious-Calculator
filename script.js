@@ -119,43 +119,37 @@ const IMAGE_PLACEHOLDER =
  * already generated in Images.js.
  */
 function imageTag(assetId, className = "") {
-  const value = cleanAssetId(assetId);
+  const value = String(assetId ?? "").trim();
 
   let id = value;
 
-  /*
-   * If the value is a Roblox thumbnail API URL,
-   * extract the asset ID.
-   */
-  if (
-    value.startsWith("http://") ||
-    value.startsWith("https://")
-  ) {
-    const match = value.match(
-      /assetIds=(\d+)/i
-    );
+  // Extract asset ID from a Roblox thumbnail URL
+  const match = value.match(/assetIds=(\d+)/i);
 
-    if (match) {
-      id = match[1];
-    }
+  if (match) {
+    id = match[1];
   }
 
-  /*
-   * Images.js contains:
-   *
-   * const MH_IMAGES = {
-   *   "123456": "https://tr.rbxcdn.com/..."
-   * }
-   */
-  const imageUrl =
-    MH_IMAGES[id] || IMAGE_PLACEHOLDER;
+  // Remove rbxassetid:// if present
+  id = id.replace(/^rbxassetid:\/\//i, "");
+
+  // Get the image from Images.js
+  const imageUrl = MH_IMAGES[String(id)];
+
+  if (!imageUrl) {
+    console.warn(
+      "No image found in MH_IMAGES for asset:",
+      id
+    );
+  }
 
   return `<img
     class="${escapeAttr(className)}"
-    src="${escapeAttr(imageUrl)}"
+    src="${escapeAttr(imageUrl || IMAGE_PLACEHOLDER)}"
     data-asset-id="${escapeAttr(id)}"
     alt=""
     loading="lazy"
+    onerror="console.warn('Failed to display image:', this.dataset.assetId, this.src)"
   >`;
 }
 
