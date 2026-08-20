@@ -11,7 +11,12 @@ const superstitious = (MH_DATA.SuperstitiousItems || []).filter(
 );
 
 const byId = new Map(
-  items.map((x) => [String(x.Id), x])
+  [
+    ...(MH_DATA.ElementItems || []),
+    ...(MH_DATA.Catalysts || [])
+  ]
+    .filter((x) => x && x.Name)
+    .map((x) => [String(x.Id), x])
 );
 
 const catalystById = new Map(
@@ -98,14 +103,26 @@ function selectSuperstitious(item) {
   selectedSuperstitious = item;
   recipe.clear();
 
-  // Get the catalyst belonging to this Superstitious item
-  selectedCatalyst = catalystById.get(
-    String(item.CatalystId)
-  ) || null;
+  // Automatically add the required catalyst
+  if (item.CatalystId !== undefined && item.CatalystId !== null) {
+    const catalyst = catalystById.get(
+      String(item.CatalystId)
+    );
+
+    if (catalyst) {
+      recipe.set(
+        String(catalyst.Id),
+        1
+      );
+    } else {
+      console.warn(
+        "Catalyst not found:",
+        item.CatalystId
+      );
+    }
+  }
 
   render();
-
-  renderItemGrid();
 
   window.scrollTo({
     top: 0,
@@ -483,18 +500,21 @@ function renderElements() {
       const target =
         required[element];
 
-      const ratio =
-        target === 0
-          ? value === 0
-            ? 1
-            : 0
-          : Math.max(
-              0,
-              Math.min(
-                1,
-                value / target
-              )
-            );
+      let ratio;
+
+      if (target === 0) {
+        // Keep the bar visible for elements that aren't required.
+        // 0/0 = full bar, and any extra amount also keeps it visible.
+        ratio = 1;
+      } else {
+        ratio = Math.max(
+          0,
+          Math.min(
+            1,
+            value / target
+          )
+        );
+      }
 
       const complete =
         target === 0
@@ -510,10 +530,8 @@ function renderElements() {
           ? "complete"
           : "incomplete";
 
-      return `<div
-  class="element ${statusClass}"
-  data-element="${escapeAttr(element)}"
-      >
+      return `<div class="element ${statusClass}">
+
         <div class="element-head">
 
           <span class="element-name">
