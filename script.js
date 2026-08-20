@@ -26,10 +26,16 @@ const targetPicker = document.getElementById("targetPicker");
    ============================================================ */
 
 function cleanAssetId(assetId) {
-  return String(assetId ?? "")
-    .replace(/^rbxassetid:\/\//i, "")
-    .trim();
+  const value = String(assetId ?? '').trim();
+
+  // If this is already an image URL, leave it alone.
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+
+  return value.replace(/^rbxassetid:\/\//i, '');
 }
+
 
 /*
  * Placeholder shown before Roblox returns the real image URL.
@@ -63,17 +69,21 @@ const imageLoading = new Set();
  * IMPORTANT:
  * This does NOT make an API request.
  */
-function imageTag(assetId, className = "") {
-  const id = cleanAssetId(assetId);
+function imageTag(assetId, className = '') {
+  const value = cleanAssetId(assetId);
 
-  const cachedUrl = imageCache.get(id);
+  let imageUrl = value;
+
+  // If it's an asset ID, look up the cached Roblox image.
+  if (!value.startsWith('http://') && !value.startsWith('https://')) {
+    imageUrl = MH_IMAGES[value] || '';
+  }
 
   return `<img
     class="${escapeAttr(className)}"
-    src="${escapeAttr(cachedUrl || IMAGE_PLACEHOLDER)}"
+    src="${escapeAttr(imageUrl)}"
     alt=""
     loading="lazy"
-    data-asset-id="${escapeAttr(id)}"
   >`;
 }
 
