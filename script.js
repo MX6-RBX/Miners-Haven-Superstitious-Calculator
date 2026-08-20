@@ -1,275 +1,117 @@
-const itemGrid = document.getElementById("itemGrid");
-const searchBox = document.getElementById("searchBox");
+const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
+const recipe = new Map();
 
-const itemListPage = document.getElementById("itemListPage");
-const craftingPage = document.getElementById("craftingPage");
+// Supports the current MH_DATA format: { "1": { Id, Name, Image, Elements }, ... }
+const items = Object.values(MH_DATA).filter(x => x && x.Name && x.Elements);
+const byId = new Map(items.map(x => [String(x.Id), x]));
 
-const craftingContent =
-    document.getElementById("craftingContent");
+const search = document.getElementById('search');
+const results = document.getElementById('results');
+const recipeEl = document.getElementById('recipe');
+const elementsEl = document.getElementById('elements');
+const itemCount = document.getElementById('itemCount');
 
-const backButton =
-    document.getElementById("backButton");
-
-
-/*
-    Roblox thumbnail URL
-
-    Example:
-
-    Image = "139806034160713"
-
-    becomes:
-
-    https://thumbnails.roblox.com/v1/assets?
-    assetIds=139806034160713&
-    size=420x420&
-    format=Png&
-    isCircular=false
-*/
-
-function getThumbnail(id) {
-
-    // Handle rbxassetid:// IDs
-    id = String(id).replace("rbxassetid://", "");
-
-    return `https://thumbnails.roblox.com/v1/assets?assetIds=${id}&size=420x420&format=Png&isCircular=false`;
+function addItem(item, amount = 1) {
+  const id = String(item.Id);
+  const current = recipe.get(id) || 0;
+  recipe.set(id, current + amount);
+  render();
 }
 
-
-/*
-    Render all Superstitious items
-*/
-
-function renderItems(search = "") {
-
-    itemGrid.innerHTML = "";
-
-    const filtered =
-        gameData.SuperstitiousItems.filter(item =>
-            item.Name
-                .toLowerCase()
-                .includes(search.toLowerCase())
-        );
-
-
-    filtered.forEach(item => {
-
-        const card =
-            document.createElement("div");
-
-        card.className = "item-card";
-
-
-        const image =
-            document.createElement("img");
-
-        image.className = "item-image";
-
-        image.src = getThumbnail(item.Image);
-
-        image.alt = item.Name;
-
-
-        const name =
-            document.createElement("div");
-
-        name.className = "item-name";
-
-        name.textContent = item.Name;
-
-
-        card.appendChild(image);
-
-        card.appendChild(name);
-
-
-        card.addEventListener(
-            "click",
-            () => openCrafting(item.Id)
-        );
-
-
-        itemGrid.appendChild(card);
-
-    });
+function removeItem(id) {
+  recipe.delete(String(id));
+  render();
 }
 
-
-/*
-    Open crafting page
-*/
-
-function openCrafting(itemId) {
-
-    const item =
-        gameData.SuperstitiousItems.find(
-            x => x.Id === itemId
-        );
-
-
-    if (!item) {
-        return;
-    }
-
-
-    itemListPage.classList.add("hidden");
-
-    craftingPage.classList.remove("hidden");
-
-
-    /*
-        Find catalyst belonging to this item
-    */
-
-    const catalyst =
-        gameData.Catalysts.find(
-            x => x.Id === item.Id
-        );
-
-
-    craftingContent.innerHTML = `
-
-        <div class="crafting-header">
-
-            <img
-                class="crafting-image"
-                src="${getThumbnail(item.Image)}"
-                alt="${item.Name}"
-            >
-
-            <div class="crafting-title">
-
-                <h2>${item.Name}</h2>
-
-                <p>
-                    Superstitious Item
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="elements-panel">
-
-            <h3>Required Elements</h3>
-
-            <div class="element-grid">
-
-                ${createElement("Earth", item.Elements.Earth)}
-
-                ${createElement("Aether", item.Elements.Aether)}
-
-                ${createElement("Order", item.Elements.Order)}
-
-                ${createElement("Fire", item.Elements.Fire)}
-
-                ${createElement("Entropy", item.Elements.Entropy)}
-
-                ${createElement("Water", item.Elements.Water)}
-
-            </div>
-
-        </div>
-
-
-        ${
-            catalyst
-            ?
-            `
-            <div class="catalyst-panel">
-
-                <h3>Catalyst</h3>
-
-                <div class="catalyst-name">
-                    ${catalyst.Name}
-                </div>
-
-                <p>
-                    Catalyst ID:
-                    ${catalyst.CatalystId}
-                </p>
-
-            </div>
-            `
-            :
-            ""
-        }
-
-
-        <div
-            class="elements-panel"
-            style="margin-top:20px"
-        >
-
-            <h3>Crafting Cost</h3>
-
-            <p>
-                The recipe calculation will go here.
-            </p>
-
-        </div>
-
-    `;
+function changeQty(id, amount) {
+  id = String(id);
+  const next = (recipe.get(id) || 0) + amount;
+  if (next <= 0) recipe.delete(id);
+  else recipe.set(id, next);
+  render();
 }
 
-
-/*
-    Create an element display
-*/
-
-function createElement(name, value) {
-
-    return `
-
-        <div class="element">
-
-            <div class="element-name">
-                ${name}
-            </div>
-
-            <div class="element-value">
-                ${value}
-            </div>
-
-        </div>
-
-    `;
+function calculateTotals() {
+  const totals = Object.fromEntries(ELEMENTS.map(e => [e, 0]));
+  for (const [id, qty] of recipe) {
+    const item = byId.get(id);
+    if (!item) continue;
+    for (const element of ELEMENTS) totals[element] += (Number(item.Elements[element]) || 0) * qty;
+  }
+  return totals;
 }
 
+function renderResults(query = '') {
+  const q = query.trim().toLowerCase();
+  if (!q) { results.classList.add('hidden'); results.innerHTML = ''; return; }
 
-/*
-    Search
-*/
+  const matches = items.filter(item => item.Name.toLowerCase().includes(q)).slice(0, 25);
+  results.innerHTML = matches.length ? matches.map(item => `
+    <div class="result" data-id="${escapeHtml(item.Id)}">
+      <img class="icon" src="${escapeAttr(item.Image)}" alt="">
+      <div class="result-info">
+        <div class="result-name">${escapeHtml(item.Name)}</div>
+        <div class="result-type">ID ${escapeHtml(item.Id)}</div>
+      </div>
+    </div>`).join('') : '<div class="result">No items found.</div>';
+  results.classList.remove('hidden');
+}
 
-searchBox.addEventListener(
-    "input",
-    () => {
+function render() {
+  const totalCount = [...recipe.values()].reduce((a,b) => a+b, 0);
+  itemCount.textContent = `${totalCount} item${totalCount === 1 ? '' : 's'}`;
 
-        renderItems(searchBox.value);
+  if (!recipe.size) {
+    recipeEl.className = 'recipe empty';
+    recipeEl.innerHTML = '<div class="empty-state">Search for an item above to add it to your recipe.</div>';
+  } else {
+    recipeEl.className = 'recipe';
+    recipeEl.innerHTML = [...recipe.entries()].map(([id, qty]) => {
+      const item = byId.get(id);
+      return `<div class="recipe-item">
+        <img src="${escapeAttr(item.Image)}" alt="">
+        <div><div class="name">${escapeHtml(item.Name)}</div><div class="meta">ID ${escapeHtml(item.Id)}</div></div>
+        <div class="qty"><button data-action="minus" data-id="${escapeHtml(id)}">−</button><span>${qty}</span><button data-action="plus" data-id="${escapeHtml(id)}">+</button></div>
+        <button class="remove" data-action="remove" data-id="${escapeHtml(id)}">×</button>
+      </div>`;
+    }).join('');
+  }
 
-    }
-);
+  const totals = calculateTotals();
+  const max = Math.max(1, ...Object.values(totals).map(Math.abs));
+  elementsEl.innerHTML = ELEMENTS.map(element => {
+    const value = totals[element];
+    const negative = value < 0;
+    const width = Math.min(100, Math.abs(value) / max * 100);
+    return `<div class="element ${negative ? 'negative' : 'positive'}">
+      <div class="element-head"><span class="element-name">${element}</span><span class="value">${formatNumber(value)}</span></div>
+      <div class="bar"><div class="fill" style="width:${width}%"></div></div>
+    </div>`;
+  }).join('');
+}
 
+function formatNumber(n) { return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:2}); }
+function escapeHtml(v) { return String(v).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function escapeAttr(v) { return escapeHtml(v); }
 
-/*
-    Back button
-*/
-
-backButton.addEventListener(
-    "click",
-    () => {
-
-        craftingPage.classList.add("hidden");
-
-        itemListPage.classList.remove("hidden");
-
-    }
-);
-
-
-/*
-    Initial load
-*/
-
-renderItems();
+search.addEventListener('input', e => renderResults(e.target.value));
+results.addEventListener('click', e => {
+  const row = e.target.closest('.result[data-id]');
+  if (!row) return;
+  const item = byId.get(String(row.dataset.id));
+  if (item) addItem(item);
+  search.value = '';
+  results.classList.add('hidden');
+  search.focus();
+});
+recipeEl.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  if (btn.dataset.action === 'plus') changeQty(id, 1);
+  if (btn.dataset.action === 'minus') changeQty(id, -1);
+  if (btn.dataset.action === 'remove') removeItem(id);
+});
+document.getElementById('clearBtn').addEventListener('click', () => { recipe.clear(); render(); });
+document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) results.classList.add('hidden'); });
+render();
