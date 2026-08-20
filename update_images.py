@@ -59,16 +59,27 @@ def read_data_js():
 def get_asset_ids(data):
     ids = set()
 
-    for item in data.values():
-        asset_id = extract_asset_id(
-            item.get("Image")
-        )
+    def process_item(item):
+        if isinstance(item, dict):
+            asset_id = extract_asset_id(
+                item.get("Image")
+            )
 
-        if asset_id:
-            ids.add(asset_id)
+            if asset_id:
+                ids.add(asset_id)
+
+            # Check nested values too.
+            for value in item.values():
+                if isinstance(value, (dict, list)):
+                    process_item(value)
+
+        elif isinstance(item, list):
+            for value in item:
+                process_item(value)
+
+    process_item(data)
 
     return sorted(ids)
-
 
 def fetch_batch(ids):
     url = "https://thumbnails.roblox.com/v1/assets"
