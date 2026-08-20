@@ -1,17 +1,5 @@
-const ELEMENTS = [
-  "Earth",
-  "Aether",
-  "Order",
-  "Fire",
-  "Entropy",
-  "Water"
-];
-
+const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
 const recipe = new Map();
-
-/* ============================================================
-   DATA
-   ============================================================ */
 
 const items = (MH_DATA.ElementItems || []).filter(
   (x) => x && x.Name && x.Elements
@@ -21,91 +9,42 @@ const superstitious = (MH_DATA.SuperstitiousItems || []).filter(
   (x) => x && x.Name && x.Elements
 );
 
-const catalysts = (MH_DATA.Catalysts || []).filter(
-  (x) => x && x.Name
-);
-
 const byId = new Map(
   items.map((x) => [String(x.Id), x])
 );
 
 const catalystById = new Map(
-  catalysts.map((x) => [String(x.Id), x])
+  (MH_DATA.Catalysts || []).map((x) => [String(x.Id), x])
 );
 
 let selectedSuperstitious = null;
 
-/* ============================================================
-   DOM
-   ============================================================ */
-
-const superstitiousGrid =
-  document.getElementById("superstitiousGrid");
-
-const itemGrid =
-  document.getElementById("itemGrid");
-
-const recipeEl =
-  document.getElementById("recipe");
-
-const recipeTargetEl =
-  document.getElementById("recipeTarget");
-
-const elementsEl =
-  document.getElementById("elements");
-
-const itemCount =
-  document.getElementById("itemCount");
-
-const catalogCount =
-  document.getElementById("catalogCount");
-
-const targetPicker =
-  document.getElementById("targetPicker");
+const superstitiousGrid = document.getElementById("superstitiousGrid");
+const itemGrid = document.getElementById("itemGrid");
+const recipeEl = document.getElementById("recipe");
+const recipeTargetEl = document.getElementById("recipeTarget");
+const elementsEl = document.getElementById("elements");
+const itemCount = document.getElementById("itemCount");
+const catalogCount = document.getElementById("catalogCount");
+const targetPicker = document.getElementById("targetPicker");
 
 /* ============================================================
    IMAGE SYSTEM
    ============================================================ */
 
-/*
- * Converts an image value into an asset ID.
- */
 function cleanAssetId(assetId) {
   const value = String(assetId ?? "").trim();
 
-  if (!value) {
-    return "";
-  }
-
-  /*
-   * If this is already a URL, try to extract
-   * the Roblox asset ID.
-   */
   if (
     value.startsWith("http://") ||
     value.startsWith("https://")
   ) {
-    const match = value.match(/assetIds=(\d+)/i);
-
-    if (match) {
-      return match[1];
-    }
-
     return value;
   }
 
-  /*
-   * rbxassetid://123456
-   */
-  return value.replace(
-    /^rbxassetid:\/\//i,
-    ""
-  );
+  return value.replace(/^rbxassetid:\/\//i, "");
 }
 
-/*
- * Placeholder used when an image isn't found.
- */
 const IMAGE_PLACEHOLDER =
   "data:image/svg+xml;charset=UTF-8," +
   encodeURIComponent(`
@@ -114,42 +53,39 @@ const IMAGE_PLACEHOLDER =
     </svg>
   `);
 
-/*
- * Creates an image element using the URLs
- * already generated in Images.js.
- */
+const imageCache = new Map();
+
 function imageTag(assetId, className = "") {
-  const value = String(assetId ?? "").trim();
+  const value = cleanAssetId(assetId);
 
   let id = value;
 
-  // Extract asset ID from a Roblox thumbnail URL
-  const match = value.match(/assetIds=(\d+)/i);
+  /*
+   * If the stored value is a Roblox thumbnail URL,
+   * extract the asset ID.
+   */
+  if (
+    value.startsWith("http://") ||
+    value.startsWith("https://")
+  ) {
+    const match = value.match(/assetIds=(\d+)/i);
 
-  if (match) {
-    id = match[1];
+    if (match) {
+      id = match[1];
+    }
   }
 
-  // Remove rbxassetid:// if present
-  id = id.replace(/^rbxassetid:\/\//i, "");
-
-  // Get the image from Images.js
-  const imageUrl = MH_IMAGES[String(id)];
-
-  if (!imageUrl) {
-    console.warn(
-      "No image found in MH_IMAGES for asset:",
-      id
-    );
-  }
+  const imageUrl =
+    MH_IMAGES[id] ||
+    imageCache.get(id) ||
+    IMAGE_PLACEHOLDER;
 
   return `<img
     class="${escapeAttr(className)}"
-    src="${escapeAttr(imageUrl || IMAGE_PLACEHOLDER)}"
+    src="${escapeAttr(imageUrl)}"
     data-asset-id="${escapeAttr(id)}"
     alt=""
     loading="lazy"
-    onerror="console.warn('Failed to display image:', this.dataset.assetId, this.src)"
   >`;
 }
 
@@ -159,21 +95,22 @@ function imageTag(assetId, className = "") {
 
 function selectSuperstitious(item) {
   selectedSuperstitious = item;
-
   recipe.clear();
 
   render();
 
+  // The item buttons change from disabled -> enabled,
+  // so the item grid needs to be rebuilt here.
+  renderItemGrid();
+
   window.scrollTo({
     top: 0,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 }
 
 function addNormalItem(item) {
-  if (!selectedSuperstitious) {
-    return;
-  }
+  if (!selectedSuperstitious) return;
 
   const id = String(item.Id);
 
@@ -208,14 +145,16 @@ function removeItem(id) {
 
 function removeTarget() {
   selectedSuperstitious = null;
-
   recipe.clear();
 
   render();
 
+  // Buttons need to become disabled again.
+  renderItemGrid();
+
   targetPicker.scrollIntoView({
     behavior: "smooth",
-    block: "start"
+    block: "start",
   });
 }
 
@@ -225,23 +164,17 @@ function removeTarget() {
 
 function calculateCurrentTotals() {
   const totals = Object.fromEntries(
-    ELEMENTS.map((element) => [
-      element,
-      0
-    ])
+    ELEMENTS.map((e) => [e, 0])
   );
 
   for (const [id, qty] of recipe) {
     const item = byId.get(id);
 
-    if (!item) {
-      continue;
-    }
+    if (!item) continue;
 
     for (const element of ELEMENTS) {
       totals[element] +=
-        (Number(item.Elements[element]) || 0) *
-        qty;
+        (Number(item.Elements[element]) || 0) * qty;
     }
   }
 
@@ -251,19 +184,16 @@ function calculateCurrentTotals() {
 function calculateRequiredTotals() {
   if (!selectedSuperstitious) {
     return Object.fromEntries(
-      ELEMENTS.map((element) => [
-        element,
-        0
-      ])
+      ELEMENTS.map((e) => [e, 0])
     );
   }
 
   return Object.fromEntries(
-    ELEMENTS.map((element) => [
-      element,
+    ELEMENTS.map((e) => [
+      e,
       Number(
-        selectedSuperstitious.Elements[element]
-      ) || 0
+        selectedSuperstitious.Elements[e]
+      ) || 0,
     ])
   );
 }
@@ -272,7 +202,7 @@ function formatNumber(n) {
   return Number.isInteger(n)
     ? n.toLocaleString()
     : n.toLocaleString(undefined, {
-        maximumFractionDigits: 2
+        maximumFractionDigits: 2,
       });
 }
 
@@ -280,22 +210,22 @@ function formatNumber(n) {
    HTML SAFETY
    ============================================================ */
 
-function escapeHtml(value) {
-  return String(value).replace(
+function escapeHtml(v) {
+  return String(v).replace(
     /[&<>'"]/g,
-    (character) =>
+    (c) =>
       ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         "'": "&#39;",
-        '"': "&quot;"
-      })[character]
+        '"': "&quot;",
+      })[c]
   );
 }
 
-function escapeAttr(value) {
-  return escapeHtml(value);
+function escapeAttr(v) {
+  return escapeHtml(v);
 }
 
 /* ============================================================
@@ -308,74 +238,45 @@ function superstitiousCard(item) {
     String(selectedSuperstitious.Id) ===
       String(item.Id);
 
-  /*
-   * Find the catalyst belonging to this
-   * superstitious item.
-   */
-  const catalyst =
-    item.CatalystId != null
-      ? catalystById.get(
-          String(item.CatalystId)
-        )
-      : null;
+  return `<button
+    class="item-card ${selected ? "selected" : ""}"
+    data-super-id="${escapeAttr(item.Id)}"
+  >
+    ${imageTag(item.Image, "card-image")}
 
-  const catalystName =
-    catalyst?.Name ||
-    `Catalyst ${item.CatalystId ?? "Unknown"}`;
+    <div class="card-name">
+      ${escapeHtml(item.Name)}
+    </div>
 
-  return `
-    <button
-      class="item-card ${selected ? "selected" : ""}"
-      data-super-id="${escapeAttr(item.Id)}"
-    >
-
-      ${imageTag(
-        item.Image,
-        "card-image"
-      )}
-
-      <div class="card-name">
-        ${escapeHtml(item.Name)}
-      </div>
-
-      <div class="card-meta">
-        ${escapeHtml(catalystName)}
-      </div>
-
-    </button>
-  `;
+    <div class="card-meta">
+      Catalyst ${escapeHtml(item.CatalystId)}
+    </div>
+  </button>`;
 }
 
 function normalCard(item) {
   const qty =
     recipe.get(String(item.Id)) || 0;
 
-  return `
-    <button
-      class="item-card ${qty ? "in-recipe" : ""}"
-      data-item-id="${escapeAttr(item.Id)}"
-      ${selectedSuperstitious ? "" : "disabled"}
-    >
+  return `<button
+    class="item-card ${qty ? "in-recipe" : ""}"
+    data-item-id="${escapeAttr(item.Id)}"
+    ${selectedSuperstitious ? "" : "disabled"}
+  >
+    ${imageTag(item.Image, "card-image")}
 
-      ${imageTag(
-        item.Image,
-        "card-image"
-      )}
+    <div class="card-name">
+      ${escapeHtml(item.Name)}
+    </div>
 
-      <div class="card-name">
-        ${escapeHtml(item.Name)}
-      </div>
-
-      <div class="card-meta">
-        ${
-          qty
-            ? `In recipe: ${qty}`
-            : `ID ${escapeHtml(item.Id)}`
-        }
-      </div>
-
-    </button>
-  `;
+    <div class="card-meta">
+      ${
+        qty
+          ? `In recipe: ${qty}`
+          : `ID ${escapeHtml(item.Id)}`
+      }
+    </div>
+  </button>`;
 }
 
 /* ============================================================
@@ -399,9 +300,7 @@ function renderItemGrid() {
     `${sorted.length} items`;
 
   itemGrid.innerHTML =
-    sorted
-      .map(normalCard)
-      .join("");
+    sorted.map(normalCard).join("");
 }
 
 /* ============================================================
@@ -411,28 +310,12 @@ function renderItemGrid() {
 function renderTarget() {
   if (!selectedSuperstitious) {
     recipeTargetEl.classList.add("hidden");
-
     recipeTargetEl.innerHTML = "";
 
     return;
   }
 
-  recipeTargetEl.classList.remove(
-    "hidden"
-  );
-
-  const catalyst =
-    selectedSuperstitious.CatalystId != null
-      ? catalystById.get(
-          String(
-            selectedSuperstitious.CatalystId
-          )
-        )
-      : null;
-
-  const catalystName =
-    catalyst?.Name ||
-    `Catalyst ${selectedSuperstitious.CatalystId ?? "Unknown"}`;
+  recipeTargetEl.classList.remove("hidden");
 
   recipeTargetEl.innerHTML = `
     <div class="target-card">
@@ -457,8 +340,10 @@ function renderTarget() {
           </div>
 
           <div class="target-catalyst">
-            Catalyst:
-            ${escapeHtml(catalystName)}
+            Catalyst ID
+            ${escapeHtml(
+              selectedSuperstitious.CatalystId
+            )}
           </div>
 
         </div>
@@ -472,8 +357,7 @@ function renderTarget() {
 
       </div>
 
-    </div>
-  `;
+    </div>`;
 }
 
 /* ============================================================
@@ -483,8 +367,7 @@ function renderTarget() {
 function renderRecipe() {
   const totalCount =
     [...recipe.values()].reduce(
-      (total, quantity) =>
-        total + quantity,
+      (a, b) => a + b,
       0
     );
 
@@ -524,59 +407,55 @@ function renderRecipe() {
       .map(([id, qty]) => {
         const item = byId.get(id);
 
-        if (!item) {
-          return "";
-        }
+        if (!item) return "";
 
-        return `
-          <div class="recipe-item">
+        return `<div class="recipe-item">
 
-            ${imageTag(item.Image)}
+          ${imageTag(item.Image)}
 
-            <div class="recipe-info">
+          <div class="recipe-info">
 
-              <div class="name">
-                ${escapeHtml(item.Name)}
-              </div>
-
-              <div class="meta">
-                ID ${escapeHtml(item.Id)}
-              </div>
-
+            <div class="name">
+              ${escapeHtml(item.Name)}
             </div>
 
-            <div class="qty">
-
-              <button
-                data-action="minus"
-                data-id="${escapeAttr(id)}"
-              >
-                −
-              </button>
-
-              <span>
-                ${qty}
-              </span>
-
-              <button
-                data-action="plus"
-                data-id="${escapeAttr(id)}"
-              >
-                +
-              </button>
-
+            <div class="meta">
+              ID ${escapeHtml(item.Id)}
             </div>
+
+          </div>
+
+          <div class="qty">
 
             <button
-              class="remove"
-              data-action="remove"
+              data-action="minus"
               data-id="${escapeAttr(id)}"
             >
-              Remove
+              −
+            </button>
+
+            <span>
+              ${qty}
+            </span>
+
+            <button
+              data-action="plus"
+              data-id="${escapeAttr(id)}"
+            >
+              +
             </button>
 
           </div>
-        `;
+
+          <button
+            class="remove"
+            data-action="remove"
+            data-id="${escapeAttr(id)}"
+          >
+            Remove
+          </button>
+
+        </div>`;
       })
       .join("");
 }
@@ -627,60 +506,54 @@ function renderElements() {
           ? "complete"
           : "incomplete";
 
-      return `
-        <div
-          class="element ${statusClass}"
-        >
+      return `<div class="element ${statusClass}">
 
-          <div class="element-head">
+        <div class="element-head">
 
-            <span class="element-name">
-              ${element}
-            </span>
+          <span class="element-name">
+            ${element}
+          </span>
 
-            <span class="element-values">
+          <span class="element-values">
 
-              <b>
-                ${formatNumber(value)}
-              </b>
+            <b>
+              ${formatNumber(value)}
+            </b>
 
-              <span>/</span>
+            <span>/</span>
 
-              <strong>
-                ${formatNumber(target)}
-              </strong>
+            <strong>
+              ${formatNumber(target)}
+            </strong>
 
-            </span>
-
-          </div>
-
-          <div class="bar">
-
-            <div
-              class="fill"
-              style="width:${ratio * 100}%"
-            ></div>
-
-          </div>
-
-          <div class="bar-caption">
-
-            <span>
-              Current
-            </span>
-
-            <span>
-              Required${
-                over
-                  ? " • over"
-                  : ""
-              }
-            </span>
-
-          </div>
+          </span>
 
         </div>
-      `;
+
+        <div class="bar">
+
+          <div
+            class="fill"
+            style="width:${ratio * 100}%"
+          ></div>
+
+        </div>
+
+        <div class="bar-caption">
+
+          <span>
+            Current
+          </span>
+
+          <span>
+            Required${
+              over ? " • over" : ""
+            }
+          </span>
+
+        </div>
+
+      </div>`;
     })
     .join("");
 }
@@ -691,14 +564,18 @@ function renderElements() {
 
 function render() {
   renderSuperstitiousGrid();
-
   renderTarget();
-
   renderRecipe();
-
-  renderItemGrid();
-
   renderElements();
+
+  /*
+   * IMPORTANT:
+   * renderItemGrid() is intentionally NOT here.
+   *
+   * Rebuilding the entire item grid every time the recipe
+   * changes causes all of the images to be destroyed and
+   * recreated, which creates the flicker.
+   */
 }
 
 /* ============================================================
@@ -707,15 +584,13 @@ function render() {
 
 superstitiousGrid.addEventListener(
   "click",
-  (event) => {
+  (e) => {
     const card =
-      event.target.closest(
+      e.target.closest(
         "[data-super-id]"
       );
 
-    if (!card) {
-      return;
-    }
+    if (!card) return;
 
     const item =
       superstitious.find(
@@ -734,9 +609,9 @@ superstitiousGrid.addEventListener(
 
 itemGrid.addEventListener(
   "click",
-  (event) => {
+  (e) => {
     const card =
-      event.target.closest(
+      e.target.closest(
         "[data-item-id]"
       );
 
@@ -749,7 +624,9 @@ itemGrid.addEventListener(
 
     const item =
       byId.get(
-        String(card.dataset.itemId)
+        String(
+          card.dataset.itemId
+        )
       );
 
     if (item) {
@@ -760,35 +637,32 @@ itemGrid.addEventListener(
 
 recipeEl.addEventListener(
   "click",
-  (event) => {
-    const button =
-      event.target.closest(
+  (e) => {
+    const btn =
+      e.target.closest(
         "[data-action]"
       );
 
-    if (!button) {
-      return;
-    }
+    if (!btn) return;
 
-    const id =
-      button.dataset.id;
+    const id = btn.dataset.id;
 
     if (
-      button.dataset.action ===
+      btn.dataset.action ===
       "plus"
     ) {
       changeQty(id, 1);
     }
 
     if (
-      button.dataset.action ===
+      btn.dataset.action ===
       "minus"
     ) {
       changeQty(id, -1);
     }
 
     if (
-      button.dataset.action ===
+      btn.dataset.action ===
       "remove"
     ) {
       removeItem(id);
@@ -798,9 +672,9 @@ recipeEl.addEventListener(
 
 recipeTargetEl.addEventListener(
   "click",
-  (event) => {
+  (e) => {
     if (
-      event.target.closest(
+      e.target.closest(
         "#removeTargetBtn"
       )
     ) {
@@ -811,19 +685,24 @@ recipeTargetEl.addEventListener(
 
 document
   .getElementById("clearBtn")
-  .addEventListener(
-    "click",
-    () => {
-      selectedSuperstitious = null;
+  .addEventListener("click", () => {
+    selectedSuperstitious = null;
+    recipe.clear();
 
-      recipe.clear();
+    render();
 
-      render();
-    }
-  );
+    // Rebuild once because the buttons
+    // need to become disabled.
+    renderItemGrid();
+  });
 
 /* ============================================================
    INITIAL RENDER
    ============================================================ */
 
 render();
+
+/*
+ * Render the item grid once when the page loads.
+ */
+renderItemGrid();
