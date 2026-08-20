@@ -1,13 +1,38 @@
 const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
 const recipe = new Map();
 
-const items = Object.values(MH_DATA).filter((x) => x && x.Name && x.Elements);
-const superstitious = SUPERSTITIOUS_ITEMS.filter(
+/*
+ * MH_DATA structure:
+ *
+ * MH_DATA = {
+ *   Catalysts: [...],
+ *   SuperstitiousItems: [...],
+ *   ElementItems: [...]
+ * }
+ */
+
+// Normal recipe items
+const items = (MH_DATA.ElementItems || []).filter(
   (x) => x && x.Name && x.Elements,
 );
-const byId = new Map(items.map((x) => [String(x.Id), x]));
+
+// Superstitious targets
+const superstitious = (MH_DATA.SuperstitiousItems || []).filter(
+  (x) => x && x.Name && x.Elements,
+);
+
+// Fast lookup for normal items
+const byId = new Map(
+  items.map((x) => [String(x.Id), x])
+);
+
+// Fast lookup for catalysts
+const catalysts = (MH_DATA.Catalysts || []).filter(
+  (x) => x && x.Name
+);
+
 const catalystById = new Map(
-  superstitious.map((x) => [String(x.CatalystId), x]),
+  catalysts.map((x) => [String(x.Id), x])
 );
 
 let selectedSuperstitious = null;
