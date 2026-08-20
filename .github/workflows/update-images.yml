@@ -1,10 +1,9 @@
-name: Update Roblox Images
+name: Update Roblox Image URLs
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "Data.js"
+  schedule:
+    - cron: "0 0 * * *"
 
 permissions:
   contents: write
@@ -16,28 +15,31 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          pip install requests
 
-      - name: Update Images.js
-        run: python update_images.py
+      - name: Update Roblox image URLs
+        run: |
+          python update_images.py
 
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add Images.js
+          git add .
 
-          if git diff --cached --quiet; then
-            echo "No image changes."
-          else
-            git commit -m "Update Roblox image URLs"
-            git push
-          fi
+          git commit -m "Update Roblox image URLs" || exit 0
+
+          git pull --rebase origin main
+
+          git push origin main
