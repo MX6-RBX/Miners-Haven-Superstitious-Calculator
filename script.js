@@ -262,7 +262,6 @@ function normalCard(item) {
     class="item-card ${qty ? "in-recipe" : ""}"
     data-item-id="${escapeAttr(item.Id)}"
     type="button"
-    ${selectedSuperstitious ? "" : "disabled"}
   >
     ${imageTag(item.Image, "card-image")}
 
@@ -636,20 +635,20 @@ superstitiousGrid.addEventListener(
   }
 );
 
-itemGrid.addEventListener("click", (e) => {
-  const card = e.target.closest("[data-item-id]");
+itemGrid.addEventListener("click", function (e) {
+  const card = e.target.closest(".item-card[data-item-id]");
 
-  if (!card || !selectedSuperstitious) {
+  if (!card) return;
+
+  const id = String(card.dataset.itemId);
+  const item = byId.get(id);
+
+  if (!item) {
+    console.error("Could not find item:", id);
     return;
   }
 
-  const item = byId.get(
-    String(card.dataset.itemId)
-  );
-
-  if (item) {
-    addNormalItem(item);
-  }
+  addNormalItem(item);
 });
 recipeEl.addEventListener(
   "click",
