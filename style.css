@@ -42,8 +42,8 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px}.header-act
   flex-shrink: 0;
 }
 .catalyst-image {
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
   flex-shrink: 0;
 }
