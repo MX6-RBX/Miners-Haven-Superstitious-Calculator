@@ -728,7 +728,7 @@ const MH_DATA = {
     },
     {
       "Id": 131,
-      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=rbxassetid://258219395&size=420x420&format=Png&isCircular=false",
+      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=258219395&size=420x420&format=Png&isCircular=false",
       "Name": "Frozen Justice",
       "Elements": {
         "Earth": 0,
@@ -897,7 +897,7 @@ const MH_DATA = {
     },
     {
       "Id": 150,
-      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=rbxassetid://4925066910&size=420x420&format=Png&isCircular=false",
+      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4925066910&size=420x420&format=Png&isCircular=false",
       "Name": "Nature's Grip",
       "Elements": {
         "Earth": 5,
@@ -1430,7 +1430,7 @@ const MH_DATA = {
     },
     {
       "Id": 143,
-      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=rbxassetid://78456229298419&size=420x420&format=Png&isCircular=false",
+      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=78456229298419&size=420x420&format=Png&isCircular=false",
       "Name": "Massive Diamond Mine",
       "Elements": {
         "Earth": 5,
@@ -1716,7 +1716,7 @@ const MH_DATA = {
     },
     {
       "Id": 127,
-      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=rbxassetid://91936110115467&size=420x420&format=Png&isCircular=false",
+      "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=91936110115467&size=420x420&format=Png&isCircular=false",
       "Name": "Quantum Ore Cleaner",
       "Elements": {
         "Earth": -2,
