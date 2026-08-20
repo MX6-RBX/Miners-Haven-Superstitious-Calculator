@@ -191,7 +191,9 @@ function calculateCurrentTotals() {
   for (const [id, qty] of recipe) {
     const item = byId.get(id);
 
-    if (!item) continue;
+    if (!item || !item.Elements) {
+      continue;
+    }
 
     for (const element of ELEMENTS) {
       totals[element] +=
