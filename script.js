@@ -15,6 +15,11 @@ const byId = new Map(
     .filter((x) => x && x.Name && x.Elements)
     .map((x) => [String(x.Id), x])
 );
+const catalystById = new Map(
+  (MH_DATA.Catalysts || []).map(
+    (x) => [String(x.Id), x]
+  )
+);
 let selectedSuperstitious = null;
 
 const superstitiousGrid = document.getElementById("superstitiousGrid");
