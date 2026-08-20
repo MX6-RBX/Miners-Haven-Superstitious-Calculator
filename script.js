@@ -1,24 +1,20 @@
 const ELEMENTS = ["Earth", "Aether", "Order", "Fire", "Entropy", "Water"];
 const recipe = new Map();
 
-// Normal recipe items
 const items = (MH_DATA.ElementItems || []).filter(
   (x) => x && x.Name && x.Elements
 );
 
-// Superstitious recipe targets
 const superstitious = (MH_DATA.SuperstitiousItems || []).filter(
   (x) => x && x.Name && x.Elements
 );
 
-// Normal items by ID
 const byId = new Map(
   items.map((x) => [String(x.Id), x])
 );
 
-// Superstitious items by CatalystId
 const catalystById = new Map(
-  superstitious.map((x) => [String(x.CatalystId), x])
+  (MH_DATA.Catalysts || []).map((x) => [String(x.Id), x])
 );
 
 let selectedSuperstitious = null;
