@@ -68,8 +68,6 @@ const imageCache = new Map();
  * This prevents the same asset from being requested multiple
  * times at once.
  */
-const imageLoading = new Set();
-
 /*
  * Create an image element.
  *
@@ -119,116 +117,12 @@ function imageTag(assetId, className = '') {
  * Ask Roblox for the actual image URLs for the supplied
  * asset IDs.
  */
-async function loadRobloxImages(assetIds) {
-  const ids = [...new Set(assetIds.map(cleanAssetId).filter(Boolean))];
 
-  if (!ids.length) return;
-
-  // Roblox limits how many IDs can be requested at once.
-  // 20 is safely below the limit.
-  const BATCH_SIZE = 20;
-
-  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
-    const batch = ids.slice(i, i + BATCH_SIZE);
-
-    const idsToLoad = batch.filter(
-      (id) => !imageCache.has(id) && !imageLoading.has(id),
-    );
-
-    if (!idsToLoad.length) continue;
-
-    idsToLoad.forEach((id) => imageLoading.add(id));
-
-    try {
-      const url =
-        "https://thumbnails.roblox.com/v1/assets" +
-        "?assetIds=" +
-        idsToLoad.join(",") +
-        "&size=420x420" +
-        "&format=png" +
-        "&isCircular=false";
-
-      console.log(
-        `Loading image batch ${Math.floor(i / BATCH_SIZE) + 1}:`,
-        idsToLoad,
-      );
-
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (!result || !Array.isArray(result.data)) {
-        throw new Error("Roblox returned an invalid response");
-      }
-
-      for (const entry of result.data) {
-        const id = cleanAssetId(entry.targetId);
-
-        if (id && entry.imageUrl) {
-          imageCache.set(id, entry.imageUrl);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to load image batch:", error);
-    } finally {
-      idsToLoad.forEach((id) => imageLoading.delete(id));
-    }
-
-    // Update images after each batch.
-    updateImageElements();
-
-    // Small delay between requests.
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-
-  // Final update.
-  updateImageElements();
-}
-
-/*
- * Find all rendered images and replace their placeholder
- * with the actual Roblox CDN URL.
- */
-function updateImageElements() {
-  const imageElements = document.querySelectorAll("[data-asset-id]");
-
-  for (const image of imageElements) {
-    const id = cleanAssetId(image.dataset.assetId);
-
-    const imageUrl = imageCache.get(id);
-
-    if (!imageUrl) continue;
-
-    if (image.src !== imageUrl) {
-      image.src = imageUrl;
-    }
-  }
-}
 
 /*
  * Look at the images currently on the page and load any
  * that haven't been retrieved yet.
  */
-function loadCurrentImages() {
-  const imageElements = document.querySelectorAll("[data-asset-id]");
-
-  const assetIds = [
-    ...new Set(
-      [...imageElements]
-        .map((image) => cleanAssetId(image.dataset.assetId))
-        .filter(Boolean),
-    ),
-  ];
-
-  if (!assetIds.length) return;
-
-  loadRobloxImages(assetIds);
-}
-
 /* ============================================================
    RECIPE
    ============================================================ */
