@@ -1,141 +1,141 @@
-const MH_DATA = {
+{
   "Catalysts": [
     {
-      "Id": 1076,
+      "Id": 438,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=999536545&size=420x420&format=Png&isCircular=false",
       "Name": "Saturated Catalyst"
     },
     {
-      "Id": 1076,
+      "Id": 235,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4925066084&size=420x420&format=Png&isCircular=false",
       "Name": "The Catalyst"
     },
     {
-      "Id": 1076,
+      "Id": 1046,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4925066084&size=420x420&format=Png&isCircular=false",
       "Name": "⭐ Charged Catalyst ⭐"
     },
     {
-      "Id": 1076,
+      "Id": 1846,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=95542713135083&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Chaos"
     },
     {
-      "Id": 1076,
+      "Id": 1117,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=999536545&size=420x420&format=Png&isCircular=false",
       "Name": "⭐ Charged Saturated Catalyst ⭐"
     },
     {
-      "Id": 1076,
+      "Id": 1196,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118421675&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Blood Magic"
     },
     {
-      "Id": 1076,
+      "Id": 1773,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=131198100303044&size=420x420&format=Png&isCircular=false",
       "Name": "Ancient Catalyst"
     },
     {
-      "Id": 1076,
+      "Id": 1796,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=114478758998712&size=420x420&format=Png&isCircular=false",
       "Name": "⭐ Contemporary Catalyst ⭐"
     },
     {
-      "Id": 1076,
+      "Id": 914,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118417979&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of the Supreme"
     },
     {
-      "Id": 1076,
+      "Id": 912,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118416862&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Void"
     },
     {
-      "Id": 1076,
+      "Id": 1175,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118417504&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Time"
     },
     {
-      "Id": 1076,
+      "Id": 913,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118417725&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Thunder"
     },
     {
-      "Id": 1076,
+      "Id": 915,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118418226&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Spirits"
     },
     {
-      "Id": 1076,
+      "Id": 1075,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118418504&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Space"
     },
     {
-      "Id": 1076,
+      "Id": 962,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118418866&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Power"
     },
     {
-      "Id": 1076,
+      "Id": 1210,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118419058&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Oblivion"
     },
     {
-      "Id": 1076,
+      "Id": 1195,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118419280&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Necromancy"
     },
     {
-      "Id": 1076,
+      "Id": 1073,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118419493&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Nature"
     },
     {
-      "Id": 1076,
+      "Id": 1194,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118419693&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Magic"
     },
     {
-      "Id": 1076,
+      "Id": 909,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118419978&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Light"
     },
     {
-      "Id": 1076,
+      "Id": 1074,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118420223&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Knowledge"
     },
     {
-      "Id": 1076,
+      "Id": 963,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118420440&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Fortune"
     },
     {
-      "Id": 1076,
+      "Id": 964,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118420641&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Fire"
     },
     {
-      "Id": 1076,
+      "Id": 910,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118420885&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Earth"
     },
     {
-      "Id": 1076,
+      "Id": 911,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118421203&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Destruction"
     },
     {
-      "Id": 1076,
+      "Id": 965,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=8118421429&size=420x420&format=Png&isCircular=false",
       "Name": "Catalyst of Death"
     }
   ],
   "SuperstitiousItems": [
     {
-      "Id": 1076,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4993136195&size=420x420&format=Png&isCircular=false",
       "Name": "Garden of Gaia",
+      "Id": 1076,
       "Elements": {
         "Earth": 150,
         "Aether": 45,
@@ -143,12 +143,13 @@ const MH_DATA = {
         "Fire": 5,
         "Entropy": 10,
         "Water": 80
-      }
+      },
+      "CatalystId": 1073
     },
     {
-      "Id": 858,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4657508167&size=420x420&format=Png&isCircular=false",
       "Name": "Delta Phantom",
+      "Id": 858,
       "Elements": {
         "Earth": 35,
         "Aether": 65,
@@ -156,12 +157,13 @@ const MH_DATA = {
         "Fire": 0,
         "Entropy": 130,
         "Water": 55
-      }
+      },
+      "CatalystId": 915
     },
     {
-      "Id": 1191,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=124939364597558&size=420x420&format=Png&isCircular=false",
       "Name": "Methuselah's Mask",
+      "Id": 1191,
       "Elements": {
         "Earth": 100,
         "Aether": 50,
@@ -169,12 +171,13 @@ const MH_DATA = {
         "Fire": 50,
         "Entropy": 150,
         "Water": 50
-      }
+      },
+      "CatalystId": 1195
     },
     {
-      "Id": 860,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=124165512842862&size=420x420&format=Png&isCircular=false",
       "Name": "Midas Blaster",
+      "Id": 860,
       "Elements": {
         "Earth": 100,
         "Aether": 0,
@@ -182,12 +185,13 @@ const MH_DATA = {
         "Fire": 50,
         "Entropy": 25,
         "Water": 0
-      }
+      },
+      "CatalystId": 963
     },
     {
-      "Id": 861,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4925067592&size=420x420&format=Png&isCircular=false",
       "Name": "The Death Cap",
+      "Id": 861,
       "Elements": {
         "Earth": 50,
         "Aether": 35,
@@ -195,12 +199,13 @@ const MH_DATA = {
         "Fire": 15,
         "Entropy": 125,
         "Water": 20
-      }
+      },
+      "CatalystId": 965
     },
     {
-      "Id": 863,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4657512167&size=420x420&format=Png&isCircular=false",
       "Name": "Vulcan's Wrath",
+      "Id": 863,
       "Elements": {
         "Earth": 40,
         "Aether": 35,
@@ -208,12 +213,13 @@ const MH_DATA = {
         "Fire": 125,
         "Entropy": 55,
         "Water": 0
-      }
+      },
+      "CatalystId": 964
     },
     {
-      "Id": 859,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4657508121&size=420x420&format=Png&isCircular=false",
       "Name": "Daestrophe",
+      "Id": 859,
       "Elements": {
         "Earth": 40,
         "Aether": 0,
@@ -221,12 +227,13 @@ const MH_DATA = {
         "Fire": 95,
         "Entropy": 145,
         "Water": 45
-      }
+      },
+      "CatalystId": 912
     },
     {
-      "Id": 865,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4755153622&size=420x420&format=Png&isCircular=false",
       "Name": "Pandora's Box",
+      "Id": 865,
       "Elements": {
         "Earth": 35,
         "Aether": 35,
@@ -234,12 +241,13 @@ const MH_DATA = {
         "Fire": 80,
         "Entropy": 130,
         "Water": 12
-      }
+      },
+      "CatalystId": 911
     },
     {
-      "Id": 1192,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=5258149469&size=420x420&format=Png&isCircular=false",
       "Name": "Swag City",
+      "Id": 1192,
       "Elements": {
         "Earth": 75,
         "Aether": 50,
@@ -247,12 +255,13 @@ const MH_DATA = {
         "Fire": 75,
         "Entropy": 100,
         "Water": 25
-      }
+      },
+      "CatalystId": 1196
     },
     {
-      "Id": 857,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=126263834593131&size=420x420&format=Png&isCircular=false",
       "Name": "Optic Origin",
+      "Id": 857,
       "Elements": {
         "Earth": 0,
         "Aether": 50,
@@ -260,12 +269,13 @@ const MH_DATA = {
         "Fire": 25,
         "Entropy": 25,
         "Water": 0
-      }
+      },
+      "CatalystId": 909
     },
     {
-      "Id": 864,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4657511807&size=420x420&format=Png&isCircular=false",
       "Name": "Tyrant's Throne",
+      "Id": 864,
       "Elements": {
         "Earth": 50,
         "Aether": 10,
@@ -273,12 +283,13 @@ const MH_DATA = {
         "Fire": 25,
         "Entropy": 20,
         "Water": 0
-      }
+      },
+      "CatalystId": 962
     },
     {
-      "Id": 644,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=114961348044506&size=420x420&format=Png&isCircular=false",
       "Name": "Draedon's Gauntlet",
+      "Id": 644,
       "Elements": {
         "Earth": 10,
         "Aether": 130,
@@ -286,12 +297,13 @@ const MH_DATA = {
         "Fire": 0,
         "Entropy": 20,
         "Water": 20
-      }
+      },
+      "CatalystId": 913
     },
     {
-      "Id": 1176,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=138287804499053&size=420x420&format=Png&isCircular=false",
       "Name": "The Hourglass",
+      "Id": 1176,
       "Elements": {
         "Earth": 50,
         "Aether": 200,
@@ -299,12 +311,13 @@ const MH_DATA = {
         "Fire": 50,
         "Entropy": 100,
         "Water": 50
-      }
+      },
+      "CatalystId": 1175
     },
     {
-      "Id": 1077,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4993136686&size=420x420&format=Png&isCircular=false",
       "Name": "Ore Hypernova",
+      "Id": 1077,
       "Elements": {
         "Earth": 10,
         "Aether": 200,
@@ -312,12 +325,13 @@ const MH_DATA = {
         "Fire": 50,
         "Entropy": 100,
         "Water": 0
-      }
+      },
+      "CatalystId": 1075
     },
     {
-      "Id": 862,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=4657508601&size=420x420&format=Png&isCircular=false",
       "Name": "Elysium Solemnity",
+      "Id": 862,
       "Elements": {
         "Earth": 15,
         "Aether": 65,
@@ -325,12 +339,13 @@ const MH_DATA = {
         "Fire": 35,
         "Entropy": 35,
         "Water": 20
-      }
+      },
+      "CatalystId": 914
     },
     {
-      "Id": 1193,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=5258148968&size=420x420&format=Png&isCircular=false",
       "Name": "Meralin's Sorcery",
+      "Id": 1193,
       "Elements": {
         "Earth": 75,
         "Aether": 75,
@@ -338,12 +353,13 @@ const MH_DATA = {
         "Fire": 75,
         "Entropy": 75,
         "Water": 75
-      }
+      },
+      "CatalystId": 1194
     },
     {
-      "Id": 1211,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=5604759450&size=420x420&format=Png&isCircular=false",
       "Name": "The Heart of Void",
+      "Id": 1211,
       "Elements": {
         "Earth": 170,
         "Aether": 90,
@@ -351,12 +367,13 @@ const MH_DATA = {
         "Fire": 50,
         "Entropy": 250,
         "Water": 50
-      }
+      },
+      "CatalystId": 1210
     },
     {
-      "Id": 866,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=89422700239977&size=420x420&format=Png&isCircular=false",
       "Name": "Havium Mine",
+      "Id": 866,
       "Elements": {
         "Earth": 130,
         "Aether": 40,
@@ -364,12 +381,13 @@ const MH_DATA = {
         "Fire": 25,
         "Entropy": 0,
         "Water": 0
-      }
+      },
+      "CatalystId": 910
     },
     {
-      "Id": 1078,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=137202843397879&size=420x420&format=Png&isCircular=false",
       "Name": "Enchanted Library",
+      "Id": 1078,
       "Elements": {
         "Earth": 20,
         "Aether": 75,
@@ -377,12 +395,13 @@ const MH_DATA = {
         "Fire": 0,
         "Entropy": 20,
         "Water": 10
-      }
+      },
+      "CatalystId": 1074
     },
     {
-      "Id": 1844,
       "Image": "https://thumbnails.roblox.com/v1/assets?assetIds=101402611072594&size=420x420&format=Png&isCircular=false",
       "Name": "SpookApocalypse-Ω",
+      "Id": 1844,
       "Elements": {
         "Earth": 75,
         "Aether": 25,
@@ -390,7 +409,8 @@ const MH_DATA = {
         "Fire": 100,
         "Entropy": 200,
         "Water": 35
-      }
+      },
+      "CatalystId": 1846
     }
   ],
   "ElementItems": [
