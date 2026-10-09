@@ -6,7 +6,7 @@ const MH_IMAGES = {
   "1054389499": "https://tr.rbxcdn.com/180DAY-04b9abef44fb20f51039df225a1aeb79/420/420/Image/Png/noFilter",
   "1054390924": "https://tr.rbxcdn.com/180DAY-2ddcdac0d76e089b9bd3ea69eb59b54b/420/420/Image/Png/noFilter",
   "107907386034488": "https://tr.rbxcdn.com/180DAY-6867ae5327b4d1c62ce78301f315db0b/420/420/Image/Png/noFilter",
-  "108369027376960": "https://t4.rbxcdn.com/180DAY-92f01c392ee9a79829852ac02d3fb15a",
+  "108369027376960": "https://tr.rbxcdn.com/180DAY-245729d3131f7034dea264f7f866bebf/420/420/Image/Png/noFilter",
   "110877957466461": "https://tr.rbxcdn.com/180DAY-82aac22308ccabf2a53a9b5ee907f2f3/420/420/Image/Png/noFilter",
   "110921543487723": "https://tr.rbxcdn.com/180DAY-80359feae98f055e4dc7a1c46ff9852d/420/420/Image/Png/noFilter",
   "113213604360312": "https://tr.rbxcdn.com/180DAY-3f6c56760e946e44eab3e7ad98b689b3/420/420/Image/Png/noFilter",
