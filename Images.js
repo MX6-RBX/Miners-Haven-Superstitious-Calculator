@@ -93,7 +93,7 @@ const MH_IMAGES = {
   "4657511807": "https://tr.rbxcdn.com/180DAY-245f58186fc126e39bc4837061f685de/420/420/Image/Png/noFilter",
   "4657512167": "https://tr.rbxcdn.com/180DAY-f22a21fbde7911456f5c021553a5a308/420/420/Image/Png/noFilter",
   "4698049578": "https://tr.rbxcdn.com/180DAY-4963bbc0dd20ae932fb7e3f571a2ba54/420/420/Image/Png/noFilter",
-  "4755153622": "https://t4.rbxcdn.com/180DAY-92f01c392ee9a79829852ac02d3fb15a",
+  "4755153622": "https://tr.rbxcdn.com/180DAY-70e506d722cdb2543bc470855e983d49/420/420/Image/Png/noFilter",
   "4787528067": "https://tr.rbxcdn.com/180DAY-9ed5c06f73d4907809827e95fda8fe09/420/420/Image/Png/noFilter",
   "4925065170": "https://tr.rbxcdn.com/180DAY-feb198df779b43d82dfa9cc3409bb6f0/420/420/Image/Png/noFilter",
   "4925065538": "https://tr.rbxcdn.com/180DAY-05668af48a1ac9cf2b98a3a38b72aeb9/420/420/Image/Png/noFilter",
