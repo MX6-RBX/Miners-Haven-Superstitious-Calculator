@@ -144,7 +144,7 @@ const MH_IMAGES = {
   "79474238133269": "https://tr.rbxcdn.com/180DAY-a5c1c0bd774ca9796a2d13e69d43c6cd/420/420/Image/Png/noFilter",
   "82879109205178": "https://tr.rbxcdn.com/180DAY-3185f84eb1b2b395f4dea462c8230c11/420/420/Image/Png/noFilter",
   "87280753689915": "https://tr.rbxcdn.com/180DAY-c718f3213706d5038465b5c37964e769/420/420/Image/Png/noFilter",
-  "88168480583736": "https://t4.rbxcdn.com/180DAY-92f01c392ee9a79829852ac02d3fb15a",
+  "88168480583736": "https://tr.rbxcdn.com/180DAY-8508c03aeabba685bebd1927a3dfd878/420/420/Image/Png/noFilter",
   "89422700239977": "https://tr.rbxcdn.com/180DAY-07146fdb638745e8f083fc988b3ad35b/420/420/Image/Png/noFilter",
   "91936110115467": "https://tr.rbxcdn.com/180DAY-0d0d423d4f275359d9b1855865950f54/420/420/Image/Png/noFilter",
   "92101658247929": "https://tr.rbxcdn.com/180DAY-f54d38b93085c0a8bede1168c9d560e6/420/420/Image/Png/noFilter",
